@@ -19,5 +19,31 @@
 
 """
 
+import threading
 
+class Item:
+    def __init__(self,item_id,name,quantity,price):
+        self.item_id = item_id
+        self.name = name
+        self.quantity = quantity
+        self.price = price
 
+    def __repr__(self):
+        return f"Item(id={self.item_id}, name={self.name}, quantity={self.quantity}, price={self.price})"
+
+class Inventory:
+    _instance = None
+    _lock = threading.Lock()
+
+    def __init__(self):
+        self.items = {}
+        self.item_id = 0
+        self.lock = threading.Lock()
+
+    @classmethod
+    def get_instance(cls):
+        if not cls._instance:
+            with cls._lock:
+                if not cls._instance:
+                    cls._instance = cls()
+        return cls._instance    
